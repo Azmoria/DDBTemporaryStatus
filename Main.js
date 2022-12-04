@@ -5,22 +5,37 @@ if(localSavedEffects != undefined){
 	window.temporaryEffects = localSaveData;
 }
 else{
-	window.temporaryEffects['Mage Armor'] = {
-		name: 'Mage Armor',
-		magicArmorMod: '3'
-	}
-	window.temporaryEffects['Pass without a Trace'] = { 
+	window.temporaryEffectsData = [
+		{
+			name: 'Mage Armor',
+			magicArmorMod: '3'
+		},
+		{
 			name: 'Pass without a Trace',
 			skillMod: {
 				Stealth: '10'
 			},
-	}
-	window.temporaryEffects['Shield Spell'] = {
+		},
+		{
 			name: 'Shield Spell',
 			magicArmorMod: '5'
-	}
+		}
+	];
 
+	initTemporaryEffects(window.temporaryEffectsData);
 }
+
+
+
+
+
+
+function initTemporaryEffects(data){
+	for (status in data){
+		window.temporaryEffects[data[status].name] = data[status];
+	}
+}
+
 
 
 function setArmorMagicBonus(feature){
