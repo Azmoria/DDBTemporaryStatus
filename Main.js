@@ -167,20 +167,20 @@ function removeAttackBonus(feature){
 	});
 }
 
-                //  set your counter to 1
 
-function loopAttacks(i, length, callback=function(){}) {         //  create a loop function
-  setTimeout(function() {   //  call a 3s setTimeout when the loop is called
+
+function loopAttacks(i, length, callback=function(){}) {        
+  setTimeout(function() {   
   	$(".ct-sidebar__pane").css("visibility", "hidden");
   	callback(i);
-    i++;                    //  increment the counter
-    if (i < $(`.ddbc-combat-attack--item`).length) {           //  if the counter < 10, call the loop function
-      loopAttacks(i, length, callback);             //  ..  again which will trigger another 
+    i++;                   
+    if (i < $(`.ddbc-combat-attack--item`).length) {           
+      loopAttacks(i, length, callback);             
     }
     else{
     	$(".statusEffects").click();
 			$(".ct-sidebar__pane").css("visibility", "visible");
-    }                       //  ..  setTimeout()
+    }                       
   }, 500)
 }
 
