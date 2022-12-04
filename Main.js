@@ -22,7 +22,7 @@ window.temporaryEffectsData = [
 		magicArmorMod: '5'
 	},
 	{
-		name: 'Sharpshooter',  //to be split into proper feats
+		name: 'Sharpshooter',
 		tohit: {
 			constant: '-5',
 			restrictions: ['Ranged Weapon']
@@ -30,6 +30,17 @@ window.temporaryEffectsData = [
 		damage: {
 			constant: '10',
 			restrictions: ['Ranged Weapon']
+		},
+	},
+	{
+		name: 'Great Weapon Master -5 +10',  
+		tohit: {
+			constant: '-5',
+			restrictions: ['Melee', 'Heavy']
+		},
+		damage: {
+			constant: '10',
+			restrictions: ['Melee', 'Heavy']
 		},
 	}
 ];
@@ -129,10 +140,6 @@ function removeAttackBonus(feature){
 		if(!adjustThisToHit && !adjustThisToDamage)
 			return;
 
-
-
-
-
 			if($('.ct-item-detail .ddbc-collapsible--collapsed').length > 0){
 				$(`.ct-item-detail .ddbc-collapsible__header`).click();	
 			}
@@ -166,8 +173,6 @@ function removeAttackBonus(feature){
 
 	});
 }
-
-
 
 function loopAttacks(i, length, callback=function(){}) {        
   setTimeout(function() {   
