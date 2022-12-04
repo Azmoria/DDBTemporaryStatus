@@ -1,29 +1,41 @@
 window.temporaryEffects = {};
+
 localSavedEffects = localStorage.getItem("temporaryEffects");
 if(localSavedEffects != undefined){	
 	let localSaveData = JSON.parse(localSavedEffects);
 	window.temporaryEffects = localSaveData;
 }
-else{
-	window.temporaryEffectsData = [
-		{
-			name: 'Mage Armor',
-			magicArmorMod: '3'
-		},
-		{
-			name: 'Pass without a Trace',
-			skillMod: {
-				Stealth: '10'
-			},
-		},
-		{
-			name: 'Shield Spell',
-			magicArmorMod: '5'
-		}
-	];
 
-	initTemporaryEffects(window.temporaryEffectsData);
-}
+window.temporaryEffectsData = [
+	{
+		name: 'Mage Armor',
+		magicArmorMod: '3'
+	},
+	{
+		name: 'Pass without a Trace',
+		skillMod: {
+			Stealth: '10'
+		},
+	},
+	{
+		name: 'Shield Spell',
+		magicArmorMod: '5'
+	},
+	{
+		name: 'Sharpshooter',  //to be split into proper feats
+		tohit: {
+			constant: '-5',
+			restrictions: ['Ranged Weapon']
+		},
+		damage: {
+			constant: '10',
+			restrictions: ['Ranged Weapon']
+		},
+	}
+];
+
+ initTemporaryEffects(window.temporaryEffectsData);
+
 
 
 
@@ -32,11 +44,145 @@ else{
 
 function initTemporaryEffects(data){
 	for (status in data){
-		window.temporaryEffects[data[status].name] = data[status];
+		if(window.temporaryEffects[data[status].name] == undefined)
+			window.temporaryEffects[data[status].name] = data[status];
 	}
 }
+function setAttackBonus(feature){
+	let attackItems = $(`.ddbc-combat-attack--item`)
+
+	loopAttacks(0, attackItems.length, function(i){
+		$(attackItems[i]).click();
+		let adjustThisToHit = true;
+
+		for(restriction in feature.tohit.restrictions){
+			if($(attackItems[i]).find(`.ddbc-combat-attack__meta-item:contains('${feature.damage.restrictions[restriction]}')`).length == 0 && $(attackItems[i]).find(`.ddbc-note-components__component:contains('${feature.damage.restrictions[restriction]}')`).length == 0)
+				adjustThisToHit = false;
+		}
+
+		let adjustThisToDamage = true;
+		for(restriction in feature.damage.restrictions){
+			if($(attackItems[i]).find(`.ddbc-combat-attack__meta-item:contains('${feature.damage.restrictions[restriction]}')`).length == 0 && $(attackItems[i]).find(`.ddbc-note-components__component:contains('${feature.damage.restrictions[restriction]}')`).length == 0)
+				adjustThisToDamage = false;
+		}
+
+		if(!adjustThisToHit && !adjustThisToDamage)
+			return;
 
 
+
+
+
+			if($('.ct-item-detail .ddbc-collapsible--collapsed').length > 0){
+				$(`.ct-item-detail .ddbc-collapsible__header`).click();	
+			}
+			if(adjustThisToHit){
+				let reactProps = getReactProps(`.ct-value-editor__property--12 .ct-value-editor__property-value input`);
+		
+				let currentValue = parseInt($(`.ct-value-editor__property--12 .ct-value-editor__property-value input`)[0][reactProps].value);
+				
+				currentValue = isNaN(currentValue) ?  0 : currentValue;
+				
+				$(`.ct-value-editor__property--12 .ct-value-editor__property-value input`)[0][reactProps].value = currentValue + parseInt(feature.tohit.constant);
+				$(`.ct-value-editor__property--12 .ct-value-editor__property-value input`)[0][reactProps].onBlur({target: $(`.ct-value-editor__property--12 .ct-value-editor__property-value input`)[0][reactProps]})
+					
+
+			}
+
+			if(adjustThisToDamage){
+				let reactProps = getReactProps(`.ct-value-editor__property--10 .ct-value-editor__property-value input`);
+				let currentValue = parseInt($(`.ct-value-editor__property--10 .ct-value-editor__property-value input`)[0][reactProps].value);
+				
+				currentValue = isNaN(currentValue) ?  0 : currentValue;
+				
+				$(`.ct-value-editor__property--10 .ct-value-editor__property-value input`)[0][reactProps].value = currentValue + parseInt(feature.damage.constant);
+				$(`.ct-value-editor__property--10 .ct-value-editor__property-value input`)[0][reactProps].onBlur({target: $(`.ct-value-editor__property--10 .ct-value-editor__property-value input`)[0][reactProps]})
+
+			}
+			reactProps = getReactProps(`.ct-value-editor__property--9 .ct-value-editor__property-value input`);
+				
+			$(`.ct-value-editor__property--9 .ct-value-editor__property-value input`)[0][reactProps].value += feature.name;
+			$(`.ct-value-editor__property--9 .ct-value-editor__property-value input`)[0][reactProps].onBlur({target: $(`.ct-value-editor__property--9 .ct-value-editor__property-value input`)[0][reactProps]})
+
+	});
+				
+}
+
+function removeAttackBonus(feature){
+	let attackItems = $(`.ddbc-combat-attack--item`)
+
+	loopAttacks(0, attackItems.length, function(i){
+		$(attackItems[i]).click();
+		let adjustThisToHit = true;
+
+		for(restriction in feature.tohit.restrictions){
+			if($(attackItems[i]).find(`.ddbc-combat-attack__meta-item:contains('${feature.damage.restrictions[restriction]}')`).length == 0 && $(attackItems[i]).find(`.ddbc-note-components__component:contains('${feature.damage.restrictions[restriction]}')`).length == 0)
+				adjustThisToHit = false;
+		}
+
+		let adjustThisToDamage = true;
+		for(restriction in feature.damage.restrictions){
+			if($(attackItems[i]).find(`.ddbc-combat-attack__meta-item:contains('${feature.damage.restrictions[restriction]}')`).length == 0 && $(attackItems[i]).find(`.ddbc-note-components__component:contains('${feature.damage.restrictions[restriction]}')`).length == 0)
+				adjustThisToDamage = false;
+		}
+
+		if(!adjustThisToHit && !adjustThisToDamage)
+			return;
+
+
+
+
+
+			if($('.ct-item-detail .ddbc-collapsible--collapsed').length > 0){
+				$(`.ct-item-detail .ddbc-collapsible__header`).click();	
+			}
+			if(adjustThisToHit){
+				let reactProps = getReactProps(`.ct-value-editor__property--12 .ct-value-editor__property-value input`);
+		
+				let currentValue = parseInt($(`.ct-value-editor__property--12 .ct-value-editor__property-value input`)[0][reactProps].value);
+				
+				currentValue = isNaN(currentValue) ?  0 : currentValue;
+				
+				$(`.ct-value-editor__property--12 .ct-value-editor__property-value input`)[0][reactProps].value = currentValue - parseInt(feature.tohit.constant);
+				$(`.ct-value-editor__property--12 .ct-value-editor__property-value input`)[0][reactProps].onBlur({target: $(`.ct-value-editor__property--12 .ct-value-editor__property-value input`)[0][reactProps]})
+					
+
+			}
+
+			if(adjustThisToDamage){
+				let reactProps = getReactProps(`.ct-value-editor__property--10 .ct-value-editor__property-value input`);
+				let currentValue = parseInt($(`.ct-value-editor__property--10 .ct-value-editor__property-value input`)[0][reactProps].value);
+				
+				currentValue = isNaN(currentValue) ?  0 : currentValue;
+				
+				$(`.ct-value-editor__property--10 .ct-value-editor__property-value input`)[0][reactProps].value = currentValue - parseInt(feature.damage.constant);
+				$(`.ct-value-editor__property--10 .ct-value-editor__property-value input`)[0][reactProps].onBlur({target: $(`.ct-value-editor__property--10 .ct-value-editor__property-value input`)[0][reactProps]})
+
+			}
+			reactProps = getReactProps(`.ct-value-editor__property--9 .ct-value-editor__property-value input`);
+				
+			$(`.ct-value-editor__property--9 .ct-value-editor__property-value input`)[0][reactProps].value = $(`.ct-value-editor__property--9 .ct-value-editor__property-value input`)[0].value.replace(feature.name, "")
+			$(`.ct-value-editor__property--9 .ct-value-editor__property-value input`)[0][reactProps].onBlur({target: $(`.ct-value-editor__property--9 .ct-value-editor__property-value input`)[0][reactProps]})
+
+	});
+}
+
+                //  set your counter to 1
+
+function loopAttacks(i, length, callback=function(){}) {         //  create a loop function
+  setTimeout(function() {   //  call a 3s setTimeout when the loop is called
+  	$(".ct-sidebar__pane").css("visibility", "hidden");
+  	callback(i);
+    i++;                    //  increment the counter
+    if (i < $(`.ddbc-combat-attack--item`).length) {           //  if the counter < 10, call the loop function
+      loopAttacks(i, length, callback);             //  ..  again which will trigger another 
+    }
+    else{
+    	$(".statusEffects").click();
+			$(".ct-sidebar__pane").css("visibility", "visible");
+    }                       //  ..  setTimeout()
+  }, 500)
+}
 
 function setArmorMagicBonus(feature){
 
@@ -201,6 +347,18 @@ function buildStatusButtons(){
 			}
 
 
+			if(window.temporaryEffects[feature].applied && (window.temporaryEffects[feature]['tohit'] != undefined || window.temporaryEffects[feature]['damage'] != undefined)){
+				removeAttackBonus(window.temporaryEffects[feature]);
+				delete window.temporaryEffects[feature].applied;
+			}
+			else if(window.temporaryEffects[feature]['tohit'] != undefined || window.temporaryEffects[feature]['damage'] != undefined){
+				setAttackBonus(window.temporaryEffects[feature]);
+				window.temporaryEffects[feature].applied = true;
+			}
+
+
+
+
 			$('.statusEffects').click()
 			let savedData = JSON.stringify(window.temporaryEffects);
 			console.log('status saved', savedData);
@@ -219,6 +377,7 @@ let observer = new MutationObserver((mutations) => {
       let node = mutation.addedNodes[i]
       if (node.className == 'ct-character-sheet-desktop'){
       	buildStatus();
+
       	observer.disconnect();
       }
     }
