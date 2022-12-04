@@ -44,14 +44,75 @@ window.temporaryEffectsData = [
 		},
 	},
 	{
-		name: 'Aura of Protection +1',
+		name: 'Aura of Protection',
+		dropdown: true,
+		dropdownOptions:{
+			savingThrowMods:{
+				0: {
+					str: '0',
+					dex: '0',
+					con: '0',
+					int: '0',
+					wis: '0',
+					cha: '0'
+				},
+				1: {
+					str: '1',
+					dex: '1',
+					con: '1',
+					int: '1',
+					wis: '1',
+					cha: '1'
+				},
+				2: {
+					str: '2',
+					dex: '2',
+					con: '2',
+					int: '2',
+					wis: '2',
+					cha: '2'
+				},
+				3: {
+					str: '3',
+					dex: '3',
+					con: '3',
+					int: '3',
+					wis: '3',
+					cha: '3'
+				},
+				4: {
+					str: '4',
+					dex: '4',
+					con: '4',
+					int: '4',
+					wis: '4',
+					cha: '4'
+				},
+				5: {
+					str: '5',
+					dex: '5',
+					con: '5',
+					int: '5',
+					wis: '5',
+					cha: '5'
+				},
+				6: {
+					str: '6',
+					dex: '6',
+					con: '6',
+					int: '6',
+					wis: '6',
+					cha: '6'
+				}
+			}
+		},
 		savingThrowMods: {
-			str: '1',
-			dex: '1',
-			con: '1',
-			int: '1',
-			wis: '1',
-			cha: '1'
+					str: '0',
+					dex: '0',
+					con: '0',
+					int: '0',
+					wis: '0',
+					cha: '0'
 		},
 	},
 
@@ -177,6 +238,20 @@ function addValueToCustomValueField(feature, featureValue, editorPropertyNumber)
 	}
 }
 
+function setValueToCustomValueField(feature, featureValue, editorPropertyNumber){
+	let reactProps = getReactProps(`.ct-value-editor__property--${editorPropertyNumber} .ct-value-editor__property-value input`);
+
+	$(`.ct-value-editor__property--${editorPropertyNumber} .ct-value-editor__property-value input`)[0][reactProps].value = parseInt(featureValue);
+	$(`.ct-value-editor__property--${editorPropertyNumber} .ct-value-editor__property-value input`)[0][reactProps].onBlur({target: $(`.ct-value-editor__property--${editorPropertyNumber} .ct-value-editor__property-value input`)[0][reactProps]})
+	if($(`.ct-value-editor__property--${editorPropertyNumber} .ct-value-editor__property-source input`).length > 0){
+		
+		reactProps = getReactProps(`.ct-value-editor__property--${editorPropertyNumber} .ct-value-editor__property-source input`);
+		
+		$(`.ct-value-editor__property--${editorPropertyNumber} .ct-value-editor__property-source input`)[0][reactProps].value = feature.name;
+		$(`.ct-value-editor__property--${editorPropertyNumber} .ct-value-editor__property-source input`)[0][reactProps].onBlur({target: $(`.ct-value-editor__property--${editorPropertyNumber} .ct-value-editor__property-source input`)[0][reactProps]})
+	}
+}
+
 
 function removeValueFromCustomField(feature, featureValue, editorPropertyNumber){
 	let reactProps = getReactProps(`.ct-value-editor__property--${editorPropertyNumber} .ct-value-editor__property-value input`);
@@ -199,6 +274,16 @@ function setSavingThrowMagicBonus(feature){
 		$(`.ddbc-saving-throws-summary__ability--${savingThrow}`).click();
 		$(`.ct-ability-saving-throws-pane .ddbc-collapsible__header`).click();			
 		addValueToCustomValueField(feature, feature.savingThrowMods[savingThrow], 40)	
+	}
+
+}
+
+function setDropdownSavingThrowMagicBonus(feature){
+
+	for(savingThrow in feature.savingThrowMods){
+		$(`.ddbc-saving-throws-summary__ability--${savingThrow}`).click();
+		$(`.ct-ability-saving-throws-pane .ddbc-collapsible__header`).click();			
+		setValueToCustomValueField(feature, feature.savingThrowMods[savingThrow], 40)	
 	}
 
 }
@@ -275,12 +360,43 @@ function buildStatus(){
 
 function buildStatusButtons(){
 	let sidebarPanel = $(`<div id='statusEffectsPanel'></div>`);
+	let button;
 	for(i in window.temporaryEffects){
 		let cleanedFeatureName = i.replace(/[^A-Z0-9]/ig, "");
 		let activeTrueFalse = (window.temporaryEffects[i].applied) ? true : false;
 		let active = (activeTrueFalse) ? 'ddbc-toggle-field--is-enabled' : 'ddbc-toggle-field--is-disabled';
+		if(window.temporaryEffects[i].dropdown == true){
+			button = $(`
+			<div class="ct-condition-manage-pane__condition-heading" data-name='${i}'>
+				<div class="ct-condition-manage-pane__condition">
+					<div class="ct-condition-manage-pane__condition-preview"></div>
+					<div class="ct-condition-manage-pane__condition-name">
+						${i}
+					</div>
+					<div class="ct-condition-manage-pane__condition-toggle">
+						<select data-name='${i}'>
+						    
+						</select>
+						</div>
+					</div>
+				</div>
+			</div>
+			`);
+			for(mod in window.temporaryEffects[i].dropdownOptions){
+				for(option in window.temporaryEffects[i].dropdownOptions[mod]){
+					let selected = 'selected';
+					for(list in window.temporaryEffects[i].dropdownOptions[mod][option]){
+						if(window.temporaryEffects[i][mod][list] != window.temporaryEffects[i].dropdownOptions[mod][option][list])
+							selected = '';
+					}
+					
+					$(button).find(`select`).append(`<option value='${option}' ${selected}>${option}</option>`)
+				}
+			}
 
-		let button = $(`
+		}
+		else{
+			button = $(`
 			<div class="ct-condition-manage-pane__condition-heading" data-name='${i}'>
 				<div class="ct-condition-manage-pane__condition">
 					<div class="ct-condition-manage-pane__condition-preview"></div>
@@ -295,6 +411,8 @@ function buildStatusButtons(){
 				</div>
 			</div>
 		`);
+		}
+	
 
 		if($(`.ct-condition-manage-pane__condition-heading[data-name='${i}']`).length == 0)	
 			sidebarPanel.append(button);
@@ -303,8 +421,22 @@ function buildStatusButtons(){
 			$(".ct-sidebar__pane-content").prepend(sidebarPanel);	
 		
 
-			
-		$(button).off().on('click', function(){
+		
+		$(button).find(`select[data-name='${i}']`).change(function(){
+			  let optionSelected = $("option:selected", this);
+    		let valueSelected = this.value;
+    		for(mod in window.temporaryEffects[i].dropdownOptions){
+    			for(value in window.temporaryEffects[i][mod]){
+    				window.temporaryEffects[i][mod][value] = valueSelected;
+    			}
+    		}
+    		$(button).trigger('click');
+		});
+		$(button).off().on('click', function(e){
+			if(e.target.tagName == 'SELECT'){
+				e.stopImmediatePropagation();
+				return;
+			}
 			let feature = $(this).attr("data-name");
 			$(`.ct-initiative-box`).click();
 			//MAGIC ARMOR BUTTONS
@@ -338,14 +470,20 @@ function buildStatusButtons(){
 				window.temporaryEffects[feature].applied = true;
 			}
 
-			if(window.temporaryEffects[feature].applied && window.temporaryEffects[feature]['savingThrowMods'] != undefined){
+			if(window.temporaryEffects[feature].applied && window.temporaryEffects[feature]['savingThrowMods'] != undefined && !window.temporaryEffects[feature].dropdown){
 				removeSavingThrowMagicBonus(window.temporaryEffects[feature]);
 				delete window.temporaryEffects[feature].applied;
+			}
+			else if(window.temporaryEffects[feature]['savingThrowMods'] != undefined && window.temporaryEffects[feature].dropdown){
+				setDropdownSavingThrowMagicBonus(window.temporaryEffects[feature]);
+				window.temporaryEffects[feature].applied = true;
 			}
 			else if(window.temporaryEffects[feature]['savingThrowMods'] != undefined){
 				setSavingThrowMagicBonus(window.temporaryEffects[feature]);
 				window.temporaryEffects[feature].applied = true;
 			}
+
+
 
 
 
