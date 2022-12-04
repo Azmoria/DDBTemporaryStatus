@@ -42,7 +42,19 @@ window.temporaryEffectsData = [
 			constant: '10',
 			restrictions: ['Melee', 'Heavy']
 		},
-	}
+	},
+	{
+		name: 'Aura of Protection +1',
+		savingThrowMods: {
+			str: '1',
+			dex: '1',
+			con: '1',
+			int: '1',
+			wis: '1',
+			cha: '1'
+		},
+	},
+
 ];
 
  initTemporaryEffects(window.temporaryEffectsData);
@@ -180,7 +192,24 @@ function removeValueFromCustomField(feature, featureValue, editorPropertyNumber)
 		$(`.ct-value-editor__property--${editorPropertyNumber} .ct-value-editor__property-source input`)[0][reactProps].value = $(`.ct-value-editor__property--${editorPropertyNumber} .ct-value-editor__property-source input`)[0].value.replace(feature.name, "");
 		$(`.ct-value-editor__property--${editorPropertyNumber} .ct-value-editor__property-source input`)[0][reactProps].onBlur({target: $(`.ct-value-editor__property--${editorPropertyNumber} .ct-value-editor__property-source input`)[0][reactProps]});
 	}
+}
+function setSavingThrowMagicBonus(feature){
 
+	for(savingThrow in feature.savingThrowMods){
+		$(`.ddbc-saving-throws-summary__ability--${savingThrow}`).click();
+		$(`.ct-ability-saving-throws-pane .ddbc-collapsible__header`).click();			
+		addValueToCustomValueField(feature, feature.savingThrowMods[savingThrow], 40)	
+	}
+
+}
+
+function removeSavingThrowMagicBonus(feature){
+
+	for(savingThrow in feature.savingThrowMods){
+		$(`.ddbc-saving-throws-summary__ability--${savingThrow}`).click();
+		$(`.ct-ability-saving-throws-pane .ddbc-collapsible__header`).click();
+		removeValueFromCustomField(feature, feature.savingThrowMods[savingThrow], 40)
+	}
 }
 
 function setArmorMagicBonus(feature){
@@ -309,6 +338,14 @@ function buildStatusButtons(){
 				window.temporaryEffects[feature].applied = true;
 			}
 
+			if(window.temporaryEffects[feature].applied && window.temporaryEffects[feature]['savingThrowMods'] != undefined){
+				removeSavingThrowMagicBonus(window.temporaryEffects[feature]);
+				delete window.temporaryEffects[feature].applied;
+			}
+			else if(window.temporaryEffects[feature]['savingThrowMods'] != undefined){
+				setSavingThrowMagicBonus(window.temporaryEffects[feature]);
+				window.temporaryEffects[feature].applied = true;
+			}
 
 
 
