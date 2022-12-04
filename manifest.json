@@ -1,0 +1,25 @@
+{
+	"manifest_version": 2,
+	"name": "Temporary Status",
+	"description": "Temporary status effects on D&DBeyond character sheets.",
+	"version": "0.01",
+	"content_scripts": [
+		{
+			"matches": [
+				"https://www.dndbeyond.com/characters/*",
+				"https://www.dndbeyond.com/profile/*/characters/*"
+			],
+			"js": [
+				"Load.js"
+			]
+		}
+	],
+	"permissions": [
+		"*://*.dndbeyond.com/*"
+	],
+	"web_accessible_resources": [
+		"jquery-3.6.0.min.js",
+		"Main.js",
+		"status.css"
+	]
+}
