@@ -33,7 +33,7 @@ window.temporaryEffectsData = [
 		},
 	},
 	{
-		name: 'Great Weapon Master -5 +10',  
+		name: 'Great Weapon Master',  
 		tohit: {
 			constant: '-5',
 			restrictions: ['Melee', 'Heavy']
@@ -186,7 +186,7 @@ function loopAttacks(i, length, callback=function(){}) {
     	$(".statusEffects").click();
 			$(".ct-sidebar__pane").css("visibility", "visible");
     }                       
-  }, 500)
+  }, 1000)
 }
 
 function setArmorMagicBonus(feature){
