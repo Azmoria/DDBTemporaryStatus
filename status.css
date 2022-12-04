@@ -1,4 +1,8 @@
-:root{
-	
+#statusEffectsPanel{
+	background: var(--sidebar-color);
+}
+
+#statusEffectsPanel ~ *{
+	visibility:hidden;
 }
 
