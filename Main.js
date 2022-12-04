@@ -44,6 +44,12 @@ window.temporaryEffectsData = [
 		},
 	},
 	{
+		name: 'Fly Spell',  
+		movement: {
+			Flying: '60',
+		}
+	},
+	{
 		name: 'Aura of Protection',
 		dropdown: true,
 		dropdownOptions:{
@@ -114,8 +120,7 @@ window.temporaryEffectsData = [
 					wis: '0',
 					cha: '0'
 		},
-	},
-
+	}
 ];
 
  initTemporaryEffects(window.temporaryEffectsData);
@@ -330,6 +335,74 @@ function removeSkillBonus(feature){
 	}
 }
 
+function setMovementBonus(feature){
+	$(`.ct-speed-box`).click();
+	$(`.ct-speed-manage-pane .ddbc-collapsible__header`).click();		
+	for(moveType in feature.movement){
+		let targetMovement = $(`.ct-speed-manage-pane__customize-item-label:contains("${moveType}")`).parent().find('.ct-speed-manage-pane__customize-item-input input');
+		let featureValue = feature.movement[moveType];
+		let reactProps = getReactProps(targetMovement);
+		let currentValue = parseInt(targetMovement[0][reactProps].value);
+		currentValue = isNaN(currentValue) ?  0 : currentValue;
+
+		targetMovement[0][reactProps].value = parseInt(featureValue);
+		targetMovement[0][reactProps].onBlur({target: targetMovement[0][reactProps]});
+		targetMovement[0][reactProps].onChange({target: targetMovement[0][reactProps]});
+
+					
+
+
+		targetMovement = $(`.ct-speed-manage-pane__customize-item-label:contains("${moveType}")`).parent().find('.ct-speed-manage-pane__customize-item-source input');
+			
+		reactProps = getReactProps(targetMovement);
+
+		targetMovement[0][reactProps].onBlur({target: targetMovement[0][reactProps]});
+		targetMovement[0][reactProps].onChange({target: targetMovement[0][reactProps]});
+
+		
+
+	}
+	if(feature.name == "Fly Spell"){
+		targetMovement = $('.ct-speed-manage-pane .ddbc-select');
+		reactProps = getReactProps(targetMovement);
+
+		targetMovement[0][reactProps].value = 4;
+		targetMovement[0][reactProps].onChange({target: targetMovement[0][reactProps]});	
+	}
+}
+
+function removeMovementBonus(feature){
+	$(`.ct-speed-box`).click();
+	$(`.ct-speed-manage-pane .ddbc-collapsible__header`).click();		
+	for(moveType in feature.movement){
+		let targetMovement = $(`.ct-speed-manage-pane__customize-item-label:contains("${moveType}")`).parent().find('.ct-speed-manage-pane__customize-item-input input');
+		let featureValue = feature.movement[moveType];
+		let reactProps = getReactProps(targetMovement);
+		let currentValue = parseInt(targetMovement[0][reactProps].value);
+		currentValue = isNaN(currentValue) ?  0 : currentValue;
+
+		targetMovement[0][reactProps].value = '';
+		targetMovement[0][reactProps].onBlur({target: targetMovement[0][reactProps]});
+		targetMovement[0][reactProps].onChange({target: targetMovement[0][reactProps]});
+
+		targetMovement = $(`.ct-speed-manage-pane__customize-item-label:contains("${moveType}")`).parent().find('.ct-speed-manage-pane__customize-item-source input');
+			
+		reactProps = getReactProps(targetMovement);
+
+		targetMovement[0][reactProps].onBlur({target: targetMovement[0][reactProps]});
+		targetMovement[0][reactProps].onChange({target: targetMovement[0][reactProps]});
+
+	}
+	if(feature.name == "Fly Spell"){
+		targetMovement = $('.ct-speed-manage-pane .ddbc-select');
+		reactProps = getReactProps(targetMovement);
+
+		targetMovement[0][reactProps].value = 1;
+		targetMovement[0][reactProps].onChange({target: targetMovement[0][reactProps]});	
+	}
+
+}
+
 
 function getReactProps(selector){
 	for(i in $(selector)[0])
@@ -480,6 +553,15 @@ function buildStatusButtons(){
 			}
 			else if(window.temporaryEffects[feature]['savingThrowMods'] != undefined){
 				setSavingThrowMagicBonus(window.temporaryEffects[feature]);
+				window.temporaryEffects[feature].applied = true;
+			}
+
+			if(window.temporaryEffects[feature].applied && window.temporaryEffects[feature]['movement'] != undefined){
+				removeMovementBonus(window.temporaryEffects[feature]);
+				delete window.temporaryEffects[feature].applied;
+			}
+			else if(window.temporaryEffects[feature]['movement'] != undefined){
+				setMovementBonus(window.temporaryEffects[feature]);
 				window.temporaryEffects[feature].applied = true;
 			}
 
