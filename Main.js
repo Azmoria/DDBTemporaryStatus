@@ -33,7 +33,7 @@ window.temporaryEffectsData = [
 		},
 	},
 	{
-		name: 'Great Weapon Master',  
+		name: 'Great Weapon Master -5 +10',  
 		tohit: {
 			constant: '-5',
 			restrictions: ['Melee', 'Heavy']
@@ -139,8 +139,7 @@ function removeAttackBonus(feature){
 
 		if(!adjustThisToHit && !adjustThisToDamage)
 			return;
-
-			if($('.ct-item-detail .ddbc-collapsible--collapsed').length > 0){
+		setTimeout(function(){if($('.ct-item-detail .ddbc-collapsible--collapsed').length > 0){
 				$(`.ct-item-detail .ddbc-collapsible__header`).click();	
 			}
 			if(adjustThisToHit){
@@ -170,7 +169,8 @@ function removeAttackBonus(feature){
 				
 			$(`.ct-value-editor__property--9 .ct-value-editor__property-value input`)[0][reactProps].value = $(`.ct-value-editor__property--9 .ct-value-editor__property-value input`)[0].value.replace(feature.name, "")
 			$(`.ct-value-editor__property--9 .ct-value-editor__property-value input`)[0][reactProps].onBlur({target: $(`.ct-value-editor__property--9 .ct-value-editor__property-value input`)[0][reactProps]})
-
+		}, 300)
+			
 	});
 }
 
@@ -186,7 +186,7 @@ function loopAttacks(i, length, callback=function(){}) {
     	$(".statusEffects").click();
 			$(".ct-sidebar__pane").css("visibility", "visible");
     }                       
-  }, 1000)
+  }, 500)
 }
 
 function setArmorMagicBonus(feature){
