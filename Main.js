@@ -81,40 +81,17 @@ function setAttackBonus(feature){
 			return;
 
 
-
-
-
 			if($('.ct-item-detail .ddbc-collapsible--collapsed').length > 0){
 				$(`.ct-item-detail .ddbc-collapsible__header`).click();	
 			}
 			if(adjustThisToHit){
-				let reactProps = getReactProps(`.ct-value-editor__property--12 .ct-value-editor__property-value input`);
-		
-				let currentValue = parseInt($(`.ct-value-editor__property--12 .ct-value-editor__property-value input`)[0][reactProps].value);
-				
-				currentValue = isNaN(currentValue) ?  0 : currentValue;
-				
-				$(`.ct-value-editor__property--12 .ct-value-editor__property-value input`)[0][reactProps].value = currentValue + parseInt(feature.tohit.constant);
-				$(`.ct-value-editor__property--12 .ct-value-editor__property-value input`)[0][reactProps].onBlur({target: $(`.ct-value-editor__property--12 .ct-value-editor__property-value input`)[0][reactProps]})
-					
-
+				addValueToCustomValueField(feature, feature.tohit.constant, 12)
 			}
 
 			if(adjustThisToDamage){
-				let reactProps = getReactProps(`.ct-value-editor__property--10 .ct-value-editor__property-value input`);
-				let currentValue = parseInt($(`.ct-value-editor__property--10 .ct-value-editor__property-value input`)[0][reactProps].value);
-				
-				currentValue = isNaN(currentValue) ?  0 : currentValue;
-				
-				$(`.ct-value-editor__property--10 .ct-value-editor__property-value input`)[0][reactProps].value = currentValue + parseInt(feature.damage.constant);
-				$(`.ct-value-editor__property--10 .ct-value-editor__property-value input`)[0][reactProps].onBlur({target: $(`.ct-value-editor__property--10 .ct-value-editor__property-value input`)[0][reactProps]})
-
+				 addValueToCustomValueField(feature, feature.damage.constant, 10)
 			}
-			reactProps = getReactProps(`.ct-value-editor__property--9 .ct-value-editor__property-value input`);
-				
-			$(`.ct-value-editor__property--9 .ct-value-editor__property-value input`)[0][reactProps].value += feature.name;
-			$(`.ct-value-editor__property--9 .ct-value-editor__property-value input`)[0][reactProps].onBlur({target: $(`.ct-value-editor__property--9 .ct-value-editor__property-value input`)[0][reactProps]})
-
+			addValueToCustomValueField(feature, feature.name, 9)
 	});
 				
 }
@@ -139,36 +116,18 @@ function removeAttackBonus(feature){
 
 		if(!adjustThisToHit && !adjustThisToDamage)
 			return;
-		setTimeout(function(){if($('.ct-item-detail .ddbc-collapsible--collapsed').length > 0){
+		setTimeout(function(){
+			if($('.ct-item-detail .ddbc-collapsible--collapsed').length > 0){
 				$(`.ct-item-detail .ddbc-collapsible__header`).click();	
 			}
 			if(adjustThisToHit){
-				let reactProps = getReactProps(`.ct-value-editor__property--12 .ct-value-editor__property-value input`);
-		
-				let currentValue = parseInt($(`.ct-value-editor__property--12 .ct-value-editor__property-value input`)[0][reactProps].value);
-				
-				currentValue = isNaN(currentValue) ?  0 : currentValue;
-				
-				$(`.ct-value-editor__property--12 .ct-value-editor__property-value input`)[0][reactProps].value = currentValue - parseInt(feature.tohit.constant);
-				$(`.ct-value-editor__property--12 .ct-value-editor__property-value input`)[0][reactProps].onBlur({target: $(`.ct-value-editor__property--12 .ct-value-editor__property-value input`)[0][reactProps]})
-					
-
+				removeValueFromCustomField(feature, feature.tohit.constant, 12)
 			}
 
-			if(adjustThisToDamage){
-				let reactProps = getReactProps(`.ct-value-editor__property--10 .ct-value-editor__property-value input`);
-				let currentValue = parseInt($(`.ct-value-editor__property--10 .ct-value-editor__property-value input`)[0][reactProps].value);
-				
-				currentValue = isNaN(currentValue) ?  0 : currentValue;
-				
-				$(`.ct-value-editor__property--10 .ct-value-editor__property-value input`)[0][reactProps].value = currentValue - parseInt(feature.damage.constant);
-				$(`.ct-value-editor__property--10 .ct-value-editor__property-value input`)[0][reactProps].onBlur({target: $(`.ct-value-editor__property--10 .ct-value-editor__property-value input`)[0][reactProps]})
-
+			if(adjustThisToDamage){			
+				removeValueFromCustomField(feature, feature.damage.constant, 10);
 			}
-			reactProps = getReactProps(`.ct-value-editor__property--9 .ct-value-editor__property-value input`);
-				
-			$(`.ct-value-editor__property--9 .ct-value-editor__property-value input`)[0][reactProps].value = $(`.ct-value-editor__property--9 .ct-value-editor__property-value input`)[0].value.replace(feature.name, "")
-			$(`.ct-value-editor__property--9 .ct-value-editor__property-value input`)[0][reactProps].onBlur({target: $(`.ct-value-editor__property--9 .ct-value-editor__property-value input`)[0][reactProps]})
+			removeValueFromCustomField(feature, feature.name, 9);
 		}, 300)
 			
 	});
@@ -189,59 +148,62 @@ function loopAttacks(i, length, callback=function(){}) {
   }, 500)
 }
 
+function addValueToCustomValueField(feature, featureValue, editorPropertyNumber){
+	let reactProps = getReactProps(`.ct-value-editor__property--${editorPropertyNumber} .ct-value-editor__property-value input`);
+	let currentValue = parseInt($(`.ct-value-editor__property--${editorPropertyNumber} .ct-value-editor__property-value input`)[0][reactProps].value);
+	
+	currentValue = isNaN(currentValue) ?  0 : currentValue;
+	
+	$(`.ct-value-editor__property--${editorPropertyNumber} .ct-value-editor__property-value input`)[0][reactProps].value = currentValue + parseInt(featureValue);
+	$(`.ct-value-editor__property--${editorPropertyNumber} .ct-value-editor__property-value input`)[0][reactProps].onBlur({target: $(`.ct-value-editor__property--${editorPropertyNumber} .ct-value-editor__property-value input`)[0][reactProps]})
+	if($(`.ct-value-editor__property--${editorPropertyNumber} .ct-value-editor__property-source input`).length > 0){
+		
+		reactProps = getReactProps(`.ct-value-editor__property--${editorPropertyNumber} .ct-value-editor__property-source input`);
+		
+		$(`.ct-value-editor__property--${editorPropertyNumber} .ct-value-editor__property-source input`)[0][reactProps].value += feature.name;
+		$(`.ct-value-editor__property--${editorPropertyNumber} .ct-value-editor__property-source input`)[0][reactProps].onBlur({target: $(`.ct-value-editor__property--${editorPropertyNumber} .ct-value-editor__property-source input`)[0][reactProps]})
+	}
+}
+
+
+function removeValueFromCustomField(feature, featureValue, editorPropertyNumber){
+	let reactProps = getReactProps(`.ct-value-editor__property--${editorPropertyNumber} .ct-value-editor__property-value input`);
+	let currentValue = parseInt($(`.ct-value-editor__property--${editorPropertyNumber} .ct-value-editor__property-value input`)[0][reactProps].value);
+	currentValue = isNaN(currentValue) ?  0 : currentValue;
+
+	$(`.ct-value-editor__property--${editorPropertyNumber} .ct-value-editor__property-value input`)[0][reactProps].value = currentValue - parseInt(featureValue);
+	$(`.ct-value-editor__property--${editorPropertyNumber} .ct-value-editor__property-value input`)[0][reactProps].onBlur({target: $(`.ct-value-editor__property--${editorPropertyNumber} .ct-value-editor__property-value input`)[0][reactProps]})
+
+	if($(`.ct-value-editor__property--${editorPropertyNumber} .ct-value-editor__property-source input`).length > 0){
+		reactProps = getReactProps(`.ct-value-editor__property--${editorPropertyNumber} .ct-value-editor__property-source input`);
+		
+		$(`.ct-value-editor__property--${editorPropertyNumber} .ct-value-editor__property-source input`)[0][reactProps].value = $(`.ct-value-editor__property--${editorPropertyNumber} .ct-value-editor__property-source input`)[0].value.replace(feature.name, "");
+		$(`.ct-value-editor__property--${editorPropertyNumber} .ct-value-editor__property-source input`)[0][reactProps].onBlur({target: $(`.ct-value-editor__property--${editorPropertyNumber} .ct-value-editor__property-source input`)[0][reactProps]});
+	}
+
+}
+
 function setArmorMagicBonus(feature){
 
 	$(".ddbc-armor-class-box").click();
 	$(`.ct-armor-manage-pane .ddbc-collapsible__header`).click();	
-	let reactProps = getReactProps(`.ct-value-editor__property--2 .ct-value-editor__property-value input`);
-	let currentValue = parseInt($(`.ct-value-editor__property--2 .ct-value-editor__property-value input`)[0][reactProps].value);
-	
-	currentValue = isNaN(currentValue) ?  0 : currentValue;
-	
-	$(`.ct-value-editor__property--2 .ct-value-editor__property-value input`)[0][reactProps].value = currentValue + parseInt(feature.magicArmorMod);
-	$(`.ct-value-editor__property--2 .ct-value-editor__property-value input`)[0][reactProps].onBlur({target: $(`.ct-value-editor__property--2 .ct-value-editor__property-value input`)[0][reactProps]})
-		
-	reactProps = getReactProps(`.ct-value-editor__property--2 .ct-value-editor__property-source input`);
-	
-	$(`.ct-value-editor__property--2 .ct-value-editor__property-source input`)[0][reactProps].value += feature.name;
-	$(`.ct-value-editor__property--2 .ct-value-editor__property-source input`)[0][reactProps].onBlur({target: $(`.ct-value-editor__property--2 .ct-value-editor__property-source input`)[0][reactProps]})
+	addValueToCustomValueField(feature, feature.magicArmorMod, 2)
+
 }
 
 function removeArmorMagicBonus(feature){
 
 	$(".ddbc-armor-class-box").click();
 	$(`.ct-armor-manage-pane .ddbc-collapsible__header`).click();	
-
-	let reactProps = getReactProps(`.ct-value-editor__property--2 .ct-value-editor__property-value input`);
-	let currentValue = parseInt($(`.ct-value-editor__property--2 .ct-value-editor__property-value input`)[0][reactProps].value);
-	currentValue = isNaN(currentValue) ?  0 : currentValue;
-
-	$(`.ct-value-editor__property--2 .ct-value-editor__property-value input`)[0][reactProps].value = currentValue - parseInt(feature.magicArmorMod);
-	$(`.ct-value-editor__property--2 .ct-value-editor__property-value input`)[0][reactProps].onBlur({target: $(`.ct-value-editor__property--2 .ct-value-editor__property-value input`)[0][reactProps]})
-	
-	reactProps = getReactProps(`.ct-value-editor__property--2 .ct-value-editor__property-source input`);
-
-	$(`.ct-value-editor__property--2 .ct-value-editor__property-source input`)[0][reactProps].value = $(`.ct-value-editor__property--2 .ct-value-editor__property-source input`)[0].value.replace(feature.name, "");
-	$(`.ct-value-editor__property--2 .ct-value-editor__property-source input`)[0][reactProps].onBlur({target: $(`.ct-value-editor__property--2 .ct-value-editor__property-source input`)[0][reactProps]})
+	removeValueFromCustomField(feature, feature.magicArmorMod, 2)
 }
 
 function setSkillBonus(feature){
 
 	for(skill in feature.skillMod){
 		$(`.ct-skills__col--skill:contains(${skill})`).click();
-		$(`.ct-skill-pane .ddbc-collapsible__header`).click();	
-		
-		let reactProps = getReactProps(`.ct-value-editor__property--24 .ct-value-editor__property-value input`);
-		let currentValue = parseInt($(`.ct-value-editor__property--24 .ct-value-editor__property-value input`)[0][reactProps].value);
-		currentValue = isNaN(currentValue) ?  0 : currentValue;
-		
-		$(`.ct-value-editor__property--24 .ct-value-editor__property-value input`)[0][reactProps].value = currentValue + parseInt(feature.skillMod[skill]);
-		$(`.ct-value-editor__property--24 .ct-value-editor__property-value input`)[0][reactProps].onBlur({target: $(`.ct-value-editor__property--24 .ct-value-editor__property-value input`)[0][reactProps]})
-		
-		reactProps = getReactProps(`.ct-value-editor__property--24 .ct-value-editor__property-source input`);
-		
-		$(`.ct-value-editor__property--24 .ct-value-editor__property-source input`)[0][reactProps].value += feature.name;
-		$(`.ct-value-editor__property--24 .ct-value-editor__property-source input`)[0][reactProps].onBlur({target: $(`.ct-value-editor__property--24 .ct-value-editor__property-source input`)[0][reactProps]})
+		$(`.ct-skill-pane .ddbc-collapsible__header`).click();			
+		addValueToCustomValueField(feature, feature.skillMod[skill], 24)	
 	}
 }
 
@@ -250,22 +212,8 @@ function removeSkillBonus(feature){
 	for(skill in feature.skillMod){
 		$(`.ct-skills__col--skill:contains(${skill})`).click();
 		$(`.ct-skill-pane .ddbc-collapsible__header`).click();	
-		
-		let reactProps = getReactProps(`.ct-value-editor__property--24 .ct-value-editor__property-value input`);
-		let currentValue = parseInt($(`.ct-value-editor__property--24 .ct-value-editor__property-value input`)[0][reactProps].value);
-		
-		currentValue = isNaN(currentValue) ?  0 : currentValue;
-		
-		$(`.ct-value-editor__property--24 .ct-value-editor__property-value input`)[0][reactProps].value = currentValue - parseInt(feature.skillMod[skill]);
-		$(`.ct-value-editor__property--24 .ct-value-editor__property-value input`)[0][reactProps].onBlur({target: $(`.ct-value-editor__property--24 .ct-value-editor__property-value input`)[0][reactProps]})
-		
-		reactProps = getReactProps(`.ct-value-editor__property--24 .ct-value-editor__property-source input`);
-		
-		$(`.ct-value-editor__property--24 .ct-value-editor__property-source input`)[0][reactProps].value = $(`.ct-value-editor__property--24 .ct-value-editor__property-source input`)[0].value.replace(feature.name, "");
-		$(`.ct-value-editor__property--24 .ct-value-editor__property-source input`)[0][reactProps].onBlur({target: $(`.ct-value-editor__property--24 .ct-value-editor__property-source input`)[0][reactProps]})
+		removeValueFromCustomField(feature, feature.skillMod[skill], 24)
 	}
-
-	
 }
 
 
