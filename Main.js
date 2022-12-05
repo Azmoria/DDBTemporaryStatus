@@ -3,29 +3,37 @@ window.temporaryEffects = {};
 localSavedEffects = localStorage.getItem("temporaryEffects");
 if(localSavedEffects != undefined){	
 	let localSaveData = JSON.parse(localSavedEffects);
-	window.temporaryEffects = localSaveData;
+	for(effect in localSaveData){
+		if(localSaveData[effect].applied != undefined){
+			window.temporaryEffects[effect] = localSaveData[effect];
+		}
+	}
 }
 
-window.temporaryEffectsData = [
+window.temporaryEffectsData = [  //name and type is required for all effects
 	{
 		name: 'Mage Armor',
-		magicArmorMod: '3'
+		magicArmorMod: '3',
+		type: 'spell'  
 	},
 	{
 		name: 'Pass without a Trace',
 		skillMod: {
 			Stealth: '10'
 		},
+		type: 'spell'
 	},
 	{
-		name: 'Shield Spell',
-		magicArmorMod: '5'
+		name: 'Shield',
+		magicArmorMod: '5',
+		type: 'spell'
 	},
 	{
-		name: 'Fly Spell',  
+		name: 'Fly',  
 		movement: {
 			Flying: '60',
-		}
+		},
+		type: 'spell'
 	},
 	{
 		name: 'RAGE',  
@@ -40,10 +48,11 @@ window.temporaryEffectsData = [
 				higherlevelsconstant:['2', '3', '4'],
 			},
 			restrictions: ['Melee Weapon']
-		}
+		},
+		type: 'class'
 	},
 	{
-		name: 'Sharpshooter',
+		name: 'Sharpshooter -5 +10',
 		tohit: {
 			constant: '-5',
 			restrictions: ['Ranged Weapon']
@@ -52,6 +61,7 @@ window.temporaryEffectsData = [
 			constant: '10',
 			restrictions: ['Ranged Weapon']
 		},
+		type: 'feat'
 	},
 	{
 		name: 'Great Weapon Master -5 +10',  
@@ -63,6 +73,7 @@ window.temporaryEffectsData = [
 			constant: '10',
 			restrictions: ['Melee', 'Heavy']
 		},
+		type: 'feat'
 	},
 
 	{
@@ -136,6 +147,7 @@ window.temporaryEffectsData = [
 					wis: '0',
 					cha: '0'
 		},
+		type: 'class'
 	}
 ];
 
@@ -524,7 +536,19 @@ function buildStatus(){
 }
 
 function buildStatusButtons(){
-	let sidebarPanel = $(`<div id='statusEffectsPanel'></div>`);
+	let sidebarPanel = $(`<div id='statusEffectsPanel'>
+		<div>
+			Spells
+			<div class='spell'></div>
+		</div>
+		<div>
+			Class Abilities
+			<div class='class'></div>
+		</div>
+		<div>
+			Feats
+			<div class='feat'></div>
+		</div>`);
 	let button;
 	for(i in window.temporaryEffects){
 		let cleanedFeatureName = i.replace(/[^A-Z0-9]/ig, "");
@@ -580,7 +604,7 @@ function buildStatusButtons(){
 	
 
 		if($(`.ct-condition-manage-pane__condition-heading[data-name='${i}']`).length == 0)	
-			sidebarPanel.append(button);
+			sidebarPanel.find(`.${window.temporaryEffects[i].type}`).append(button);
 		
 		if($('#statusEffectsPanel').length == 0)
 			$(".ct-sidebar__pane-content").prepend(sidebarPanel);	
