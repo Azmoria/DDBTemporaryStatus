@@ -6,3 +6,11 @@
 	visibility:hidden;
 }
 
+.statusEffects{
+
+}
+
+.statusEffects svg path{
+	fill: var(--theme-color);
+	
+}

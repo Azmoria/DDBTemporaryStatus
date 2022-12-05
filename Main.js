@@ -520,9 +520,16 @@ function getReactProps(selector){
 function buildStatus(){
 
 	$('.ct-sidebar__pane-content').css('--sidebar-color', $('.ct-sidebar__pane-content').css('background'));
-	let statusButton = "<div class='ct-primary-box__tab--extras ddbc-tab-list__nav-item statusEffects'>Status Effects</div>";
-	$(".ct-character-header-desktop").append(statusButton);
-	$('.ct-primary-box__tab--extras.statusEffects').off().on("click", function(){
+	$('#site').css('--theme-color', $('.ddbc-svg--themed path').css('fill'));
+	let statusButton = `<div class="ct-character-header-desktop__button statusEffects" role="button" tabindex="0"><div class="ct-character-header-desktop__button-icon"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 1000 1000" enable-background="new 0 0 1000 1000" xml:space="preserve">
+<metadata> Svg Vector Icons : http://www.onlinewebfonts.com/icon </metadata>
+<g><g transform="translate(0.000000,511.000000) scale(0.100000,-0.100000)"><path d="M3648.4,4262.7c-643.5-116.4-1078.6-496.4-1254.3-1095c-36.8-126.7-44.9-220.6-53.1-586.3c-10.2-396.3-14.3-435.1-49-455.6c-145-77.6-171.6-531.1-51.1-876.4c61.3-179.8,183.8-388.1,306.4-525c67.4-73.5,110.3-151.2,155.3-277.8c185.9-514.8,584.2-900.9,1054.1-1025.5c647.6-171.6,1360.5,286,1630.2,1050c32.7,91.9,83.8,183.9,126.7,232.9c120.5,130.8,253.3,355.5,318.7,531.1c53.1,141,65.4,206.3,73.5,402.4c10.2,267.6-14.3,386.1-91.9,465.8c-51.1,51.1-53.1,59.2-57.2,349.3c-6.2,449.4-81.7,737.5-243.1,915.2c-40.9,44.9-73.5,96-73.5,112.4c0,16.3-20.4,85.8-42.9,157.3c-104.2,308.5-459.6,531.1-996.9,625.1C4193.8,4299.5,3848.6,4299.5,3648.4,4262.7z"/><path d="M7276.5,381.4c-939.7-177.7-1632.2-856-1826.3-1787.5c-47-224.7-49-643.5-2.1-858c192-888.6,802.8-1528,1679.2-1758.9c159.4-42.9,226.8-49,539.3-47c320.7,0,377.9,6.1,561.8,55.2c829.4,222.7,1446.3,876.4,1636.3,1736.4c47,210.4,47,670,0,882.5C9666.6-503.2,9010.8,164.8,8142.6,363C7942.4,407.9,7468.5,418.1,7276.5,381.4z M8146.7,23.9C8835.2-162,9354-697.3,9529.7-1400c61.3-247.2,61.3-659.8-2-892.7c-94-349.3-239-610.8-482.1-868.2c-239-251.3-512.8-418.8-862.1-527.1c-165.4-51.1-208.4-55.2-527-55.2c-320.7,0-361.6,4.1-531.1,57.2c-688.5,210.4-1191,751.8-1350.3,1452.5c-53.1,237-49,598.5,10.2,837.6c91.9,365.7,312.5,739.5,584.3,984.6c251.2,226.7,635.3,414.7,970.3,473.9C7523.7,95.4,7958.8,74.9,8146.7,23.9z"/><path d="M7568.6-21.1c-32.7-32.7-32.7-245.1,0-277.8c26.6-26.6,114.4-32.7,167.5-12.3c24.5,10.2,32.7,42.9,32.7,151.2c0,108.3-8.2,141-32.7,151.2C7683,11.6,7595.2,5.5,7568.6-21.1z"/><path d="M8255-613.5c-28.6-24.5-635.3-1062.3-690.4-1182.8c-22.5-47,6.1-130.8,275.8-827.4c165.4-424.9,314.6-790.6,332.9-809c16.4-20.4,53.1-36.8,79.7-36.8c53.1,0,128.7,65.4,128.7,114.4c0,16.4-128.7,361.6-286,764l-284,733.4l286,496.4c373.8,645.5,369.7,637.4,347.3,696.6C8416.4-589,8318.3-564.5,8255-613.5z"/><path d="M5840.4-1757.5c-81.7-114.4-20.4-200.2,141-200.2s222.7,85.8,141,200.2c-24.5,36.8-51.1,44.9-141,44.9C5891.4-1712.5,5864.9-1720.7,5840.4-1757.5z"/><path d="M9202.9-1737.1c-32.7-32.7-32.7-163.4,0-196.1c14.3-14.3,73.5-24.5,130.7-24.5c124.6,0,171.6,34.7,171.6,122.6c0,87.8-47,122.6-171.6,122.6C9276.4-1712.5,9217.2-1722.8,9202.9-1737.1z"/><path d="M7566.6-3375.4c-14.3-18.4-22.5-81.7-18.4-159.3l6.2-128.7h102.1h102.1l6.1,128.7c4.1,77.6-4.1,141-18.4,159.3C7715.7-3338.6,7597.2-3338.6,7566.6-3375.4z"/><path d="M2467.6-172.2C1317.5-640.1,1000.9-815.7,735.3-1132.4c-320.7-380-551.6-970.3-610.8-1564.8l-24.5-241l49-49c112.4-108.3,749.7-292.1,1348.3-388.1c345.2-57.2,706.8-98,1215.5-138.9c639.4-51.1,2951.9-24.5,3011.1,36.8c4.1,4.1-10.2,28.6-32.7,55.2c-222.7,247.2-457.6,768.1-529.1,1178.7c-40.8,232.9-28.6,745.6,20.4,966.3c71.5,310.5,234.9,659.8,433.1,923.4c49,67.4,89.9,126.7,89.9,132.8s-75.6,40.9-167.5,75.6l-169.5,67.4l-51.1-67.4c-512.8-668-1297.2-872.3-1959.1-510.7c-226.8,122.6-494.4,355.4-608.8,531.1c-18.4,26.6-36.8,47-44.9,45C2698.5-80.3,2592.3-123.2,2467.6-172.2z"/></g></g>
+</svg></div><span class="ct-character-header-desktop__button-label">Status Effects</span></div>`
+
+	let insertAfter = ($('.ct-character-header-desktop__group--gap').length > 0) ? '.ct-character-header-desktop__group--gap' : '.ct-character-header-tablet__group--gap';
+	$(statusButton).insertAfter(insertAfter);
+
+	$('.ct-character-header-desktop__button.statusEffects').off().on("click", function(){
 		setTimeout(function(){	
 			$(`.ct-initiative-box`).click();
 			buildStatusButtons();
@@ -627,7 +634,9 @@ function buildStatusButtons(){
 				return;
 			}
 			let feature = $(this).attr("data-name");
+
 			$(`.ct-initiative-box`).click();
+			$(".ct-sidebar__pane").css("visibility", "hidden");
 			//MAGIC ARMOR BUTTONS
 			$(`.ct-condition-manage-pane__condition-heading[data-name='${feature}'] .ddbc-toggle-field`).toggleClass('ddbc-toggle-field--is-enabled');
 			$(`.ct-condition-manage-pane__condition-heading[data-name='${feature}'] .ddbc-toggle-field`).toggleClass('ddbc-toggle-field--is-disabled');
@@ -687,6 +696,7 @@ function buildStatusButtons(){
 			}
 
 			if(	window.loopingAttacks == false){
+				$(".ct-sidebar__pane").css("visibility", "visible");
 				$('.statusEffects').click()
 			}
 	
@@ -705,10 +715,9 @@ let observer = new MutationObserver((mutations) => {
     for (let i = 0; i < mutation.addedNodes.length; i++) {
       // do things to your newly added nodes here
       let node = mutation.addedNodes[i]
-      if (node.className == 'ct-character-sheet-desktop'){
+      if (node.className == 'ct-character-sheet-desktop' || node.className == 'ct-character-sheet-tablet'){
       	buildStatus();
 
-      	observer.disconnect();
       }
     }
   })
