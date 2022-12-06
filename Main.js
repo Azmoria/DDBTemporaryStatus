@@ -172,7 +172,7 @@ function initTemporaryEffects(data){
 }
 
 function setAttackBonus(feature){
-	let attackItems = $(`.ddbc-combat-attack--item`)
+	let attackItems = $(`.ddbc-combat-attack`)
 
 
 	loopAttacks(0, attackItems.length, function(i){
@@ -230,8 +230,8 @@ function setAttackBonus(feature){
 			return;
 
 
-			if($('.ct-item-detail .ddbc-collapsible--collapsed').length > 0){
-				$(`.ct-item-detail .ddbc-collapsible__header`).click();	
+			if($('.ddbc-collapsible--collapsed').length > 0){
+				$(`.ddbc-collapsible__header`).click();	
 			}
 			if(adjustThisToHit){
 				addValueToCustomValueField(feature, feature.tohit.constant, 12)
@@ -251,7 +251,7 @@ function setAttackBonus(feature){
 }
 
 function removeAttackBonus(feature){
-	let attackItems = $(`.ddbc-combat-attack--item`)
+	let attackItems = $(`.ddbc-combat-attack`)
 
 	loopAttacks(0, attackItems.length, function(i){
 		$(attackItems[i]).click();
@@ -291,8 +291,8 @@ function removeAttackBonus(feature){
 			return;
 
 		setTimeout(function(){
-			if($('.ct-item-detail .ddbc-collapsible--collapsed').length > 0){
-				$(`.ct-item-detail .ddbc-collapsible__header`).click();	
+			if($('.ddbc-collapsible--collapsed').length > 0){
+				$(`.ddbc-collapsible__header`).click();	
 			}
 			if(adjustThisToHit){
 				removeValueFromCustomField(feature, feature.tohit.constant, 12)
@@ -315,7 +315,7 @@ function loopAttacks(i, length, callback=function(){}) {
   	$(".ct-sidebar__pane").css("visibility", "hidden");
   	callback(i);
     i++;                   
-    if (i < $(`.ddbc-combat-attack--item`).length) {           
+    if (i < $(`.ddbc-combat-attack`).length) {           
       loopAttacks(i, length, callback);             
     }
     else{
