@@ -19,7 +19,10 @@
 	],
 	"web_accessible_resources": [
 		"jquery-3.6.0.min.js",
+		"ajaxQueue/*",
 		"Main.js",
-		"status.css"
+		"status.css",
+		"DiceRoller.js",
+		"ChatObserver.js"
 	]
 }

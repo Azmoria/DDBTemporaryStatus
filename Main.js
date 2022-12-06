@@ -75,7 +75,12 @@ window.temporaryEffectsData = [  //name and type is required for all effects
 		},
 		type: 'feat'
 	},
-
+	{
+		name: 'Bless',
+		noteRoll: '/hit 1d4 Bless',
+		findRestrictions:['.ddbc-combat-attack__tohit'],
+		type: 'class'
+	},
 	{
 		name: 'Aura of Protection',
 		dropdown: true,
@@ -210,8 +215,18 @@ function setAttackBonus(feature){
 		else {
 			adjustThisToDamage = false;
 		}
+		let adjustNoteRoll = true;
+		if(feature.noteRoll != undefined){
+			for(item in feature.findRestrictions){
+					if($(attackItems[i]).find(feature.findRestrictions[0]).length == 0)
+						adjustNoteRoll = false;
+			}
+		}
+		else{
+			adjustNoteRoll = false;
+		}
 
-		if(!adjustThisToHit && !adjustThisToDamage)
+		if(!adjustThisToHit && !adjustThisToDamage && !adjustNoteRoll)
 			return;
 
 
@@ -225,8 +240,13 @@ function setAttackBonus(feature){
 			if(adjustThisToDamage){
 				 addValueToCustomValueField(feature, feature.damage.constant, 10)
 			}
-			addValueToCustomValueField(feature, feature.name, 9)
+			
+			if(adjustNoteRoll){
+				addValueToCustomValueField(feature, feature.noteRoll, 9)
+			}
+			
 	});
+
 				
 }
 
@@ -255,9 +275,21 @@ function removeAttackBonus(feature){
 		}
 		else{
 			adjustThisToDamage = false;
+		}	
+		let adjustNoteRoll = true;
+		if(feature.noteRoll != undefined){
+			for(item in feature.findRestrictions){
+					if($(attackItems[i]).find(feature.findRestrictions[0]).length == 0)
+						adjustNoteRoll = false;
+			}
 		}
-		if(!adjustThisToHit && !adjustThisToDamage)
+		else{
+			adjustNoteRoll = false;
+		}
+
+		if(!adjustThisToHit && !adjustThisToDamage && !adjustNoteRoll)
 			return;
+
 		setTimeout(function(){
 			if($('.ct-item-detail .ddbc-collapsible--collapsed').length > 0){
 				$(`.ct-item-detail .ddbc-collapsible__header`).click();	
@@ -269,7 +301,10 @@ function removeAttackBonus(feature){
 			if(adjustThisToDamage){			
 				removeValueFromCustomField(feature, feature.damage.constant, 10);
 			}
-			removeValueFromCustomField(feature, feature.name, 9);
+			if(adjustNoteRoll){
+				removeValueFromCustomField(feature, feature.noteRoll, 9);
+			}
+			
 		}, 200)
 			
 	});
@@ -302,6 +337,15 @@ function addValueToCustomValueField(feature, featureValue, editorPropertyNumber)
 		currentValue = isNaN(currentValue) ?  0 : currentValue;
 		
 		targetValue[0][reactProps].value = currentValue + parseInt(featureValue);
+		targetValue[0][reactProps].onBlur({target: targetValue[0][reactProps]})
+	}
+	targetValue = $(`.ct-value-editor__property--${editorPropertyNumber} .ct-value-editor__property-value input[type='text']`)
+	if(targetValue.length > 0){
+		let reactProps = getReactProps(targetValue);
+		let currentValue = parseInt(targetValue[0][reactProps].value);
+		
+		
+		targetValue[0][reactProps].value = featureValue;
 		targetValue[0][reactProps].onBlur({target: targetValue[0][reactProps]})
 	}
 
@@ -337,6 +381,14 @@ function removeValueFromCustomField(feature, featureValue, editorPropertyNumber)
 		currentValue = isNaN(currentValue) ?  0 : currentValue;
 
 		targetValue[0][reactProps].value = currentValue - parseInt(featureValue);
+		targetValue[0][reactProps].onBlur({target: targetValue[0][reactProps]})
+	}
+	targetValue = $(`.ct-value-editor__property--${editorPropertyNumber} .ct-value-editor__property-value input[type='text']`)
+	if(targetValue.length > 0){
+		let reactProps = getReactProps(targetValue);
+		
+		
+		targetValue[0][reactProps].value = '';
 		targetValue[0][reactProps].onBlur({target: targetValue[0][reactProps]})
 	}
 
@@ -679,14 +731,19 @@ function buildStatusButtons(){
 			}
 
 
-			if(window.temporaryEffects[feature].applied && (window.temporaryEffects[feature]['tohit'] != undefined || window.temporaryEffects[feature]['damage'] != undefined)){
+			if(window.temporaryEffects[feature].applied && (window.temporaryEffects[feature]['tohit'] != undefined || window.temporaryEffects[feature]['damage'] != undefined || window.temporaryEffects[feature]['noteRoll'] != undefined)){
 				removeAttackBonus(window.temporaryEffects[feature]);
+				$('.above-vtt-visited').toggleClass('above-vtt-visited', false)
 				window.loopingAttacks = true;
 			}
-			else if(window.temporaryEffects[feature]['tohit'] != undefined || window.temporaryEffects[feature]['damage'] != undefined){
+			else if(window.temporaryEffects[feature]['tohit'] != undefined || window.temporaryEffects[feature]['damage'] != undefined || window.temporaryEffects[feature]['noteRoll'] != undefined){
 				setAttackBonus(window.temporaryEffects[feature]);		
-					window.loopingAttacks = true;	
+				window.loopingAttacks = true;	
 			}
+
+
+
+		
 
 			if(window.temporaryEffects[feature].applied == true){
 				delete window.temporaryEffects[feature].applied
@@ -707,6 +764,41 @@ function buildStatusButtons(){
 	}	
 }
 
+/**
+* Observers character sheet for Dice Roll formulae.
+* @param {DOMObject} documentToObserve documentToObserve is `$(document)` on the characters page, and `$(event.target).contents()` every where else
+*/
+function observe_character_sheet_dice_rolls(documentToObserve) {
+ 		
+	 	const dice_roll_observer = new MutationObserver(function() {
+        const notes = documentToObserve.find(".ddbc-note-components__component:not('.above-vtt-visited')");
+        notes.each(function() {
+            $(this).addClass("above-vtt-visited");
+            try {
+                const text = $(this).text();
+                if (text.match(slashCommandRegex)?.[0]) {
+                		const diceRollImageIndex = $('.ddbc-character-avatar__portrait').attr('style').indexOf('https:/');
+                		const diceRollImageUrl = $('.ddbc-character-avatar__portrait').attr('style').substring(diceRollImageIndex, $('.ddbc-character-avatar__portrait').attr('style').length - 3);
+                    const diceRoll = DiceRoll.fromSlashCommand(text, $('.ddbc-character-tidbits__heading').text(), diceRollImageUrl);
+                    const button = $(`<button class='avtt-roll-formula-button integrated-dice__container' title="${diceRoll.action?.toUpperCase() ?? "CUSTOM"}: ${diceRoll.rollType?.toUpperCase() ?? "ROLL"}">${diceRoll.expression}</button>`);
+                    button.on("click", function (clickEvent) {
+                        clickEvent.stopPropagation();
+                        window.diceRoller.roll(diceRoll);
+                    });
+                    $(this).empty();
+                    $(this).append(button);
+                }
+            } catch (e) {
+                console.warn("Failed to parse DiceRoll expression", e);
+            }
+        });
+    });
+
+    const mutation_target = documentToObserve.get(0);
+    const mutation_config = { attributes: false, childList: true, characterData: false, subtree: true };
+    dice_roll_observer.observe(mutation_target, mutation_config);
+}
+
 
 let observer = new MutationObserver((mutations) => {
   mutations.forEach((mutation) => {
@@ -717,7 +809,7 @@ let observer = new MutationObserver((mutations) => {
       let node = mutation.addedNodes[i]
       if (node.className == 'ct-character-sheet-desktop' || node.className == 'ct-character-sheet-tablet'){
       	buildStatus();
-
+      	observe_character_sheet_dice_rolls($(document));
       }
     }
   })
@@ -729,6 +821,10 @@ observer.observe(document.body, {
   , attributes: false
   , characterData: false
 })
+	if (window.chatObserver === undefined) {
+		window.chatObserver = new ChatObserver();
+	}
+	window.chatObserver.observe($("#chat-text"));
 
 
 

@@ -16,7 +16,11 @@ let scripts = [
 	// External Dependencies
 	{ src: "jquery-3.6.0.min.js" },
 	// Files that execute when loaded
-	{ src: "Main.js" }
+	{ src: "ajaxQueue/ajaxQueueIndex.js", type: "module" },
+	{ src: "DiceRoller.js" },
+	{ src: "ChatObserver.js" },
+	{ src: "Main.js" },
+
 
 ]
 

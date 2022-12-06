@@ -14,3 +14,10 @@
 	fill: var(--theme-color);
 	
 }
+
+button.avtt-roll-formula-button {
+    font-size: 14px;
+    cursor: default;
+    color: #394B59;
+    padding: 9px;
+}
