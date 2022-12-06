@@ -7,7 +7,7 @@
 }
 
 .statusEffects{
-
+	z-index: 10000;
 }
 
 .statusEffects svg path{
