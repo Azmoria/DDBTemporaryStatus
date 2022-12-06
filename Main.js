@@ -77,7 +77,7 @@ window.temporaryEffectsData = [  //name and type is required for all effects
 	},
 	{
 		name: 'Bless',
-		noteRoll: '/hit 1d4 Bless',
+		noteRoll: '/hit 1d20+1d4[mod] Bless',
 		findRestrictions:['.ddbc-combat-attack__tohit'],
 		type: 'class'
 	},
@@ -242,7 +242,7 @@ function setAttackBonus(feature){
 			}
 			
 			if(adjustNoteRoll){
-				addValueToCustomValueField(feature, feature.noteRoll, 9)
+				addValueToCustomValueField(feature, feature.noteRoll.replace('[mod]', $(attackItems[i]).find('.ddbc-signed-number').attr('aria-label'))+' '+$(attackItems[i]).find('.ddbc-item-name').text(), 9);
 			}
 			
 	});
@@ -342,8 +342,7 @@ function addValueToCustomValueField(feature, featureValue, editorPropertyNumber)
 	targetValue = $(`.ct-value-editor__property--${editorPropertyNumber} .ct-value-editor__property-value input[type='text']`)
 	if(targetValue.length > 0){
 		let reactProps = getReactProps(targetValue);
-		let currentValue = parseInt(targetValue[0][reactProps].value);
-		
+		let currentValue = targetValue[0][reactProps].value;
 		
 		targetValue[0][reactProps].value = featureValue;
 		targetValue[0][reactProps].onBlur({target: targetValue[0][reactProps]})
