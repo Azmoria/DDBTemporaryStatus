@@ -518,7 +518,7 @@ function setMovementBonus(feature){
 		targetMovement[0][reactProps].onBlur({target: targetMovement[0][reactProps]});
 		targetMovement[0][reactProps].onChange({target: targetMovement[0][reactProps]});
 	}
-	if(feature.name == "Fly Spell"){
+	if(feature.name == "Fly"){
 		targetMovement = $('.ct-speed-manage-pane .ddbc-select');
 		reactProps = getReactProps(targetMovement);
 
@@ -549,7 +549,7 @@ function removeMovementBonus(feature){
 		targetMovement[0][reactProps].onChange({target: targetMovement[0][reactProps]});
 
 	}
-	if(feature.name == "Fly Spell"){
+	if(feature.name == "Fly"){
 		targetMovement = $('.ct-speed-manage-pane .ddbc-select');
 		reactProps = getReactProps(targetMovement);
 
@@ -741,10 +741,6 @@ function buildStatusButtons(){
 				window.loopingAttacks = true;	
 			}
 
-
-
-		
-
 			if(window.temporaryEffects[feature].applied == true){
 				delete window.temporaryEffects[feature].applied
 			}
@@ -752,11 +748,11 @@ function buildStatusButtons(){
 				window.temporaryEffects[feature].applied = true;
 			}
 
-			if(	window.loopingAttacks == false){
+			if(!window.loopingAttacks){
 				$(".ct-sidebar__pane").css("visibility", "visible");
 				$('.statusEffects').click()
 			}
-	
+			
 			let savedData = JSON.stringify(window.temporaryEffects);
 			console.log('status saved', savedData);
 			localStorage.setItem('temporaryEffects', savedData); 
