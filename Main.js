@@ -323,6 +323,7 @@ function loopAttacks(i, length, callback=function(){}) {
     	setTimeout(function(){
     		$(".statusEffects").click();
     		$(".ct-sidebar__pane").css("visibility", "visible");
+    		$('.ct-loading-blocker').remove();
     	}, 1000)	
     }                       
   }, 300)
@@ -587,8 +588,9 @@ function buildStatus(){
 		}, 200)	
 	});
 
-	$('#site *:not(.ct-sidebar__pane *)').click(function() {
-			$('#statusEffectsPanel').remove();	
+	$('#site *:not(.ct-sidebar__pane *)').click(function(event) {
+			if($(event.target).parents('.ct-sidebar__inner').length == 0)
+				$('#statusEffectsPanel').remove();	
 	
 	});
 }
@@ -679,7 +681,7 @@ function buildStatusButtons(){
     		}
     		$(button).trigger('click');
 		});
-		$(button).off().on('click', function(e){
+		$(button).find('.ct-condition-manage-pane__condition-toggle').off().on('click', function(e){
 			if(e.target.tagName == 'SELECT'){
 				e.stopImmediatePropagation();
 				return;
@@ -687,7 +689,8 @@ function buildStatusButtons(){
 			let feature = $(this).attr("data-name");
 
 			$(`.ct-initiative-box`).click();
-			$(".ct-sidebar__pane").css("visibility", "hidden");
+			let ddbLoading = `<div class="ct-loading-blocker " style='width:100%; height: 100%; background: #3338; transform: none; position:fixed; top:0px; left:0px;'><div class="ct-loading-blocker__logo"></div><iframe class="ddbc-animated-loading-ring-svg ct-loading-blocker__anim" frameborder="0" title="loading" src="data:text/html;base64,PGh0bWw+PGhlYWQ+PHN0eWxlPioge21hcmdpbjowfTwvc3R5bGU+PC9oZWFkPjxib2R5IHN0eWxlPSJiYWNrZ3JvdW5kLWNvbG9yOiB0cmFuc3BhcmVudDsiPgogICAgICAgICAgICAgICAgICAgIDxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2aWV3Qm94PSIwIDAgMTAwIDEwMCIgcHJlc2VydmVBc3BlY3RSYXRpbz0ieE1pZFlNaWQiIGNsYXNzPSJ1aWwtcmluZy1hbHQiPgogICAgICAgICAgICAgICAgICAgICAgICA8cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0ibm9uZSIgY2xhc3M9ImJrIi8+CiAgICAgICAgICAgICAgICAgICAgICAgIDxjaXJjbGUgY3g9IjUwIiBjeT0iNTAiIHI9IjQwIiBzdHJva2U9IiMxMzEzMTUiIGZpbGw9Im5vbmUiIHN0cm9rZS13aWR0aD0iMTAiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogICAgICAgICAgICAgICAgICAgICAgICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0MCIgc3Ryb2tlPSIjRUMyMTI3IiBmaWxsPSJub25lIiBzdHJva2Utd2lkdGg9IjYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCI+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICA8YW5pbWF0ZSBhdHRyaWJ1dGVOYW1lPSJzdHJva2UtZGFzaG9mZnNldCIgZHVyPSIycyIgcmVwZWF0Q291bnQ9ImluZGVmaW5pdGUiIGZyb209IjAiIHRvPSI1MDIiLz4KICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxhbmltYXRlIGF0dHJpYnV0ZU5hbWU9InN0cm9rZS1kYXNoYXJyYXkiIGR1cj0iMnMiIHJlcGVhdENvdW50PSJpbmRlZmluaXRlIiB2YWx1ZXM9IjE1MC42IDEwMC40OzEgMjUwOzE1MC42IDEwMC40Ii8+CiAgICAgICAgICAgICAgICAgICAgICAgIDwvY2lyY2xlPgogICAgICAgICAgICAgICAgICAgIDwvc3ZnPjwvYm9keT48L2h0bWw+" style="background-color: transparent;"></iframe></div>`
+			$('#site').append(ddbLoading);
 			//MAGIC ARMOR BUTTONS
 			$(`.ct-condition-manage-pane__condition-heading[data-name='${feature}'] .ddbc-toggle-field`).toggleClass('ddbc-toggle-field--is-enabled');
 			$(`.ct-condition-manage-pane__condition-heading[data-name='${feature}'] .ddbc-toggle-field`).toggleClass('ddbc-toggle-field--is-disabled');
@@ -750,6 +753,7 @@ function buildStatusButtons(){
 			if(!window.loopingAttacks){
 				$(".ct-sidebar__pane").css("visibility", "visible");
 				$('.statusEffects').click()
+				$('.ct-loading-blocker').remove();
 			}
 			
 			let savedData = JSON.stringify(window.temporaryEffects);
