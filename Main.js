@@ -507,14 +507,14 @@ function setMovementBonus(feature){
 		currentValue = isNaN(currentValue) ?  0 : currentValue;
 
 		targetMovement[0][reactProps].value = parseInt(featureValue);
-		targetMovement[0][reactProps].onBlur({target: targetMovement[0][reactProps]});		//need figure out whats going on here and why this only half works
+		targetMovement[0][reactProps].onBlur({target: targetMovement[0][reactProps]});		
 		targetMovement[0][reactProps].onChange({target: targetMovement[0][reactProps]});
 
 
 		targetMovement = $(`.ct-speed-manage-pane__customize-item-label:contains("${moveType}")`).parent().find('.ct-speed-manage-pane__customize-item-source input');
 			
-		reactProps = getReactProps(targetMovement);
-
+		reactProps = getReactProps(targetMovement);  //need figure out whats going on here and why this only half works - name doesn't get set in source
+		targetMovement[0][reactProps].value = feature.name;
 		targetMovement[0][reactProps].onBlur({target: targetMovement[0][reactProps]});
 		targetMovement[0][reactProps].onChange({target: targetMovement[0][reactProps]});
 	}
@@ -544,7 +544,7 @@ function removeMovementBonus(feature){
 		targetMovement = $(`.ct-speed-manage-pane__customize-item-label:contains("${moveType}")`).parent().find('.ct-speed-manage-pane__customize-item-source input');
 			
 		reactProps = getReactProps(targetMovement);
-
+		targetMovement[0][reactProps].value = '';
 		targetMovement[0][reactProps].onBlur({target: targetMovement[0][reactProps]});
 		targetMovement[0][reactProps].onChange({target: targetMovement[0][reactProps]});
 
