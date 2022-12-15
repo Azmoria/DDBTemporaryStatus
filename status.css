@@ -21,3 +21,15 @@ button.avtt-roll-formula-button {
     color: #394B59;
     padding: 9px;
 }
+
+#statusEffectsPanel > .ddbc-collapsible--collapsed > .ddbc-collapsible__content{
+	height: 0px;
+	transition: height 250ms linear 0ms;
+	overflow: hidden;
+}
+
+#statusEffectsPanel .ct-decoration-manager__list{
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+}

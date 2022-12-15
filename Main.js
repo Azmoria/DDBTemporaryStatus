@@ -596,19 +596,77 @@ function buildStatus(){
 }
 
 function buildStatusButtons(){
-	let sidebarPanel = $(`<div id='statusEffectsPanel'>
-		<div>
-			Spells
-			<div class='spell'></div>
+	let sidebarPanel = $(`
+
+<div id='statusEffectsPanel'>
+	<div class="ddbc-collapsible  ddbc-collapsible--collapsed">
+		<div class="ddbc-collapsible__header">
+			<div class="ddbc-collapsible__header-content ">
+				<div class="ddbc-collapsible__header-content-primary">
+					<div class="ddbc-collapsible__heading">
+						Spells
+					</div>
+				</div>
+			</div>
+			<div class="ddbc-collapsible__header-status">
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1792 1792" class="ddbc-svg ddbc-chevron-svg ddbc-chevron-up-svg ddbc-svg--light"><path fill="#fff" d="M109,1138.5l742-741c12.7-12.7,27.7-19,45-19s32.3,6.3,45,19l742,741c12.7,12.7,19,27.8,19,45.5 c0,17.7-6.3,32.8-19,45.5l-166,165c-12.7,12.7-27.7,19-45,19s-32.3-6.3-45-19l-531-531l-531,531c-12.7,12.7-27.7,19-45,19 s-32.3-6.3-45-19l-166-165c-12.7-12.7-19-27.8-19-45.5C90,1166.3,96.3,1151.2,109,1138.5z"></path></svg>
+			</div>
 		</div>
-		<div>
-			Class Abilities
-			<div class='class'></div>
+		<div class="ddbc-collapsible__content">
+			<div class="ct-decoration-manager">
+				<div class="ct-decoration-manager__group">
+					<div class="ct-decoration-manager__list spell"></div>
+				</div>
+			</div>
 		</div>
-		<div>
-			Feats
-			<div class='feat'></div>
-		</div>`);
+	</div>
+
+	<div class="ddbc-collapsible  ddbc-collapsible--collapsed">
+		<div class="ddbc-collapsible__header">
+			<div class="ddbc-collapsible__header-content ">
+				<div class="ddbc-collapsible__header-content-primary">
+					<div class="ddbc-collapsible__heading">
+						Class Abilities
+					</div>
+				</div>
+			</div>
+			<div class="ddbc-collapsible__header-status">
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1792 1792" class="ddbc-svg ddbc-chevron-svg ddbc-chevron-up-svg ddbc-svg--light"><path fill="#fff" d="M109,1138.5l742-741c12.7-12.7,27.7-19,45-19s32.3,6.3,45,19l742,741c12.7,12.7,19,27.8,19,45.5 c0,17.7-6.3,32.8-19,45.5l-166,165c-12.7,12.7-27.7,19-45,19s-32.3-6.3-45-19l-531-531l-531,531c-12.7,12.7-27.7,19-45,19 s-32.3-6.3-45-19l-166-165c-12.7-12.7-19-27.8-19-45.5C90,1166.3,96.3,1151.2,109,1138.5z"></path></svg>
+			</div>
+		</div>
+		<div class="ddbc-collapsible__content">
+			<div class="ct-decoration-manager">
+				<div class="ct-decoration-manager__group">
+					<div class="ct-decoration-manager__list class"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<div class="ddbc-collapsible  ddbc-collapsible--collapsed">
+		<div class="ddbc-collapsible__header">
+			<div class="ddbc-collapsible__header-content ">
+				<div class="ddbc-collapsible__header-content-primary">
+					<div class="ddbc-collapsible__heading">
+						Feats
+					</div>
+				</div>
+			</div>
+			<div class="ddbc-collapsible__header-status">
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1792 1792" class="ddbc-svg ddbc-chevron-svg ddbc-chevron-up-svg ddbc-svg--light"><path fill="#fff" d="M109,1138.5l742-741c12.7-12.7,27.7-19,45-19s32.3,6.3,45,19l742,741c12.7,12.7,19,27.8,19,45.5 c0,17.7-6.3,32.8-19,45.5l-166,165c-12.7,12.7-27.7,19-45,19s-32.3-6.3-45-19l-531-531l-531,531c-12.7,12.7-27.7,19-45,19 s-32.3-6.3-45-19l-166-165c-12.7-12.7-19-27.8-19-45.5C90,1166.3,96.3,1151.2,109,1138.5z"></path></svg>
+			</div>
+		</div>
+		<div class="ddbc-collapsible__content">
+			<div class="ct-decoration-manager">
+				<div class="ct-decoration-manager__group">
+					<div class="ct-decoration-manager__list feat"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+`);
 	let button;
 	for(i in window.temporaryEffects){
 		let cleanedFeatureName = i.replace(/[^A-Z0-9]/ig, "");
@@ -689,6 +747,10 @@ function buildStatusButtons(){
 			}
 			applyTemporaryEffects(e);
 			
+		});
+		$(sidebarPanel).find('.ddbc-collapsible').off().on('click', function(e){
+			$(this).toggleClass('ddbc-collapsible--opened');
+			$(this).toggleClass('ddbc-collapsible--collapsed');
 		});
 	}	
 }
