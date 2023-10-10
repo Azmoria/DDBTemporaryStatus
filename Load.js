@@ -16,12 +16,11 @@ let scripts = [
 	// External Dependencies
 	{ src: "jquery-3.6.0.min.js" },
 	// Files that execute when loaded
+	{ src: "rpg-dice-roller.bundle.min.js" },
 	{ src: "ajaxQueue/ajaxQueueIndex.js", type: "module" },
 	{ src: "DiceRoller.js" },
 	{ src: "ChatObserver.js" },
 	{ src: "Main.js" },
-
-
 ]
 
 // Too many of our scripts depend on each other. 

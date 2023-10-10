@@ -1,6 +1,6 @@
 class ChatObserver {
 
-    //#region PUBLIC
+    //#statusregion PUBLIC
 
     observe(input) {
         let self = this;
@@ -13,29 +13,29 @@ class ChatObserver {
             let value = input.val().trim();
             if (e.key === "Enter") {
                 if (value.length === 0) {
-                    self.#currentIndex = -1;
-                    self.#currentValue = "";
+                    self.#statuscurrentIndex = -1;
+                    self.#statuscurrentValue = "";
                     input.val("");
                     return;
                 }
                 let slashCommandMatch = value.match(slashCommandRegex);
                 if (slashCommandMatch?.index === 0) {
-                    if (self.#parseSlashCommand(value)) {
-                        self.#didSubmit(input, value);
+                    if (self.#statusparseSlashCommand(value)) {
+                        self.#statusdidSubmit(input, value);
                     } else {
-                        self.#shake(input);
+                        self.#statusshake(input);
                     }
                 } else {
-                    self.#sendChatMessage(value);
-                    self.#didSubmit(input, value);
+                    self.#statussendChatMessage(value);
+                    self.#statusdidSubmit(input, value);
                 }
             } else if (e.key === "ArrowUp") {
-                self.#displayIndex(input, self.#currentIndex + 1)
+                self.#statusdisplayIndex(input, self.#statuscurrentIndex + 1)
             } else if (e.key === "ArrowDown") {
-                self.#displayIndex(input, self.#currentIndex - 1)
+                self.#statusdisplayIndex(input, self.#statuscurrentIndex - 1)
             } else {
-                self.#currentIndex = -1;
-                self.#currentValue = value;
+                self.#statuscurrentIndex = -1;
+                self.#statuscurrentValue = value;
             }
         });
     }
@@ -44,33 +44,47 @@ class ChatObserver {
         input.off("keypress");
     }
 
-    //#endregion PUBLIC
-    //#region PRIVATE
+    //#statusendregion PUBLIC
+    //#statusregion PRIVATE
 
-    #chatHistory = [];
-    #currentIndex = -1; // -1 is typing a new thing. any number greater than -1 is navigating through #chatHistory
-    #currentValue = ""; // the current value of the input. We hold this separately in case the user navigates through history and then returns back to a new entry
+    #statuschatHistory = [];
+    #statuscurrentIndex = -1; // -1 is typing a new thing. any number greater than -1 is navigating through #statuschatHistory
+    #statuscurrentValue = ""; // the current value of the input. We hold this separately in case the user navigates through history and then returns back to a new entry
 
-    #didSubmit(input, text) {
-        this.#chatHistory.unshift(text);
-        this.#chatHistory = this.#chatHistory.slice(0, 100); // only keep the last 100 commands... that already seems like too many
-        this.#currentIndex = -1;
-        this.#currentValue = "";
+    #statusdidSubmit(input, text) {
+        this.#statuschatHistory.unshift(text);
+        this.#statuschatHistory = this.#statuschatHistory.slice(0, 100); // only keep the last 100 commands... that already seems like too many
+        this.#statuscurrentIndex = -1;
+        this.#statuscurrentValue = "";
         input.val("");
     }
 
-    #parseSlashCommand(text) {
+    #statusparseSlashCommand(text) {
         let diceRoll = DiceRoll.fromSlashCommand(text);
-        let didSend = window.diceRoller.roll(diceRoll);
-        if (didSend === false) {
-            // it was too complex so try to send it through rpgDiceRoller
-            let expression = text.replace(slashCommandRegex, "").match(allowedExpressionCharactersRegex)?.[0];
-            didSend = send_rpg_dice_to_ddb(expression, window.pc.name, window.pc.image, rollType, undefined, action);
+        if(window.AboveDice){
+            let expression = text.replace(statusslashCommandRegex, "").match(statusallowedExpressionCharactersRegex)?.[0];
+            let roll = new rpgDiceRoller.DiceRoll(expression); 
+            let msgdata = {
+                player: window.PLAYER_NAME,
+                img: window.PLAYER_IMG,
+                text: `<div><span class='aboveDiceTotal'>${roll.total}</span><span class='aboveDiceOutput'>${roll.output}</span></div>`,
+                whisper: (gamelog_send_to_text() != "Everyone") ? window.PLAYER_NAME : ``
+            };
+            window.MB.inject_chat(msgdata);       
         }
-        return didSend;
+        else{
+            let didSend = window.statusDiceRoller.roll(diceRoll); // TODO: update this with more details?
+            if (didSend === false) {
+                // it was too complex so try to send it through rpgDiceRoller
+                let expression = text.replace(slashCommandRegex, "").match(statusallowedExpressionCharactersRegex)?.[0];
+                didSend = send_rpg_dice_to_ddb(expression, window.pc.name, window.pc.image, rollType, undefined, action);
+            }
+            return didSend;
+        }
+
     }
 
-    #sendChatMessage(text) {
+    #statussendChatMessage(text) {
         let data = {
             player: window.PLAYER_NAME,
             img: window.PLAYER_IMG,
@@ -81,7 +95,7 @@ class ChatObserver {
             let matches = text.match(/\[(.*?)] (.*)/);
             if (matches.length === 3) {
                 data.whisper = matches[1]
-                data.text = `<div class="custom-gamelog-message"><b>&#8594;${matches[1]}</b>&nbsp;${matches[2]}</div>`;
+                data.text = `<div class="custom-gamelog-message"><b>&#status8594;${matches[1]}</b>&nbsp;${matches[2]}</div>`;
             }
         } else if (validateUrl(text)) {
             data.text = `
@@ -95,31 +109,31 @@ class ChatObserver {
         window.MB.inject_chat(data);
     }
 
-    #displayIndex(input, index) {
-        if (this.#chatHistory.length === 0) {
-            this.#shake(input);
+    #statusdisplayIndex(input, index) {
+        if (this.#statuschatHistory.length === 0) {
+            this.#statusshake(input);
             return;
         }
-        if (index >= this.#chatHistory.length || index < -1) {
-            this.#shake(input);
+        if (index >= this.#statuschatHistory.length || index < -1) {
+            this.#statusshake(input);
             return;
         }
 
-        this.#currentIndex = index;
+        this.#statuscurrentIndex = index;
 
-        if (this.#currentIndex === -1) {
-            input.val(this.#currentValue);
+        if (this.#statuscurrentIndex === -1) {
+            input.val(this.#statuscurrentValue);
         } else {
-            input.val(this.#chatHistory[this.#currentIndex]);
+            input.val(this.#statuschatHistory[this.#statuscurrentIndex]);
         }
     }
 
-    #shake(input) {
+    #statusshake(input) {
         input.addClass("chat-error-shake");
         setTimeout(function () {
             input.removeClass("chat-error-shake");
         }, 50);
     }
 
-    //#endregion PRIVATE
+    //#statusendregion PRIVATE
 }

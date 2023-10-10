@@ -23,6 +23,7 @@
 		"Main.js",
 		"status.css",
 		"DiceRoller.js",
-		"ChatObserver.js"
+		"ChatObserver.js",
+		"rpg-dice-roller.bundle.min.js"
 	]
 }
